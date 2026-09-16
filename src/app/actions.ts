@@ -914,44 +914,25 @@ export async function updateProfileAction(
   formData: FormData,
 ): Promise<ActionState> {
   const user = await requireUser();
+
   const nom = String(formData.get("nom") ?? "").trim();
   const prenom = String(formData.get("prenom") ?? "").trim();
   const telephone = String(formData.get("telephone") ?? "").trim();
-
-  const currentPassword = String(formData.get("currentPassword") ?? "");
-  const newPassword = String(formData.get("newPassword") ?? "");
 
   if (!nom) return { error: "Le nom est requis." };
   if (!prenom) return { error: "Le prénom est requis." };
   if (!telephone) return { error: "Le numéro de téléphone est requis." };
 
-    await db
+  await db
     .update(users)
     .set({ nom, prenom, telephone })
     .where(eq(users.id, user.id));
-
-  if (newPassword) {
-    if (!currentPassword)
-      return { error: "Veuillez saisir votre mot de passe actuel." };
-    if (!verifyPassword(currentPassword, user.passwordHash))
-      return { error: "Mot de passe actuel incorrect." };
-    if (newPassword.length < 8)
-      return { error: "Le nouveau mot de passe doit contenir au moins 8 caractères." };
-    patch.passwordHash = hashPassword(newPassword);
-  }
-
-  if (patch.passwordHash) patch.mustChangePassword = false;
-  await db.update(users).set(patch).where(eq(users.id, user.id));
-  revalidatePath("/profil");
-  revalidatePath("/", "layout");
-  return { ok: true };
 
   await logAudit(user, "user.profile_update", `user#${user.id}`);
   revalidatePath("/dashboard");
   revalidatePath("/profil");
   return { ok: true };
 }
-
 
 /* ------------------------------------------------------------------ */
 /* Paramètres                                                          */
