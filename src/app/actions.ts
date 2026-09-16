@@ -222,6 +222,12 @@ export async function createPublicationAction(
   const pubImmeuble = String(formData.get("pubImmeuble") ?? "").trim().toUpperCase();
   const eventAtRaw = String(formData.get("eventAt") ?? "").trim();
   const fileUrl = String(formData.get("fileUrl") ?? "").trim();
+  const isUploadUrl = (u: string) =>
+    u.startsWith("/api/uploads/") || 
+    u.startsWith("/uploads/") ||
+    u.startsWith("https://") ||
+    u.startsWith("http://");
+
   const fileName = String(formData.get("fileName") ?? "").trim();
   const fileMime = String(formData.get("fileMime") ?? "").trim();
   const fileSize = Number(formData.get("fileSize") ?? 0);
