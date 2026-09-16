@@ -1,4 +1,8 @@
 "use client";
+import { initials } from "@/lib/format";
+import { roleTone, statusTone } from "@/lib/constants";
+import { roleLabel, statusLabel } from "@/lib/i18n";
+import { UserStatusButtons, RoleManager } from "./client-forms";
 
 import { useActionState, useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -60,6 +64,145 @@ import {
 /* ------------------------------------------------------------------ */
 /* Création d'un compte par l'Administrateur                           */
 /* ------------------------------------------------------------------ */
+
+export function AccountsFilters({
+  users,
+  actorRole,
+  canManageIds,
+}: {
+  users: {
+    id: number;
+    email: string;
+    nom: string;
+    prenom: string;
+    role: string;
+    gh: number;
+    immeuble: string | null;
+    appartement: string | null;
+    status: string;
+    mustChangePassword: boolean;
+  }[];
+  actorRole: string;
+  canManageIds: number[];
+}) {
+  const t = useT();
+  const [role, setRole] = useState("");
+  const [gh, setGh] = useState<number | "">("");
+  const [immeuble, setImmeuble] = useState("");
+
+  const filtered = users.filter(
+    (u) =>
+      (!role || u.role === role) &&
+      (gh === "" || u.gh === gh) &&
+      (!immeuble || u.immeuble === immeuble),
+  );
+
+  const ghs = [...new Set(users.map((u) => u.gh))].sort((a, b) => a - b);
+  const buildings = [
+    ...new Set(
+      users
+        .filter((u) => gh === "" || u.gh === gh)
+        .map((u) => u.immeuble)
+        .filter((b): b is string => !!b),
+    ),
+  ].sort();
+
+  return (
+    <div className="space-y-4">
+      {/* Filtres : Role → GH → Immeuble */}
+      <Card>
+        <CardContent className="grid gap-3 sm:grid-cols-3">
+          <div>
+            <Label htmlFor="f-role">{t.common.role}</Label>
+            <Select id="f-role" value={role} onChange={(e) => setRole(e.target.value)}>
+              <option value="">—</option>
+              {["admin", "president", "gh_manager", "building_manager", "owner"].map((r) => (
+                <option key={r} value={r}>
+                  {roleLabel(t, r)}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="f-gh">GH</Label>
+            <Select
+              id="f-gh"
+              value={String(gh)}
+              onChange={(e) => {
+                setGh(e.target.value === "" ? "" : Number(e.target.value));
+                setImmeuble("");
+              }}
+            >
+              <option value="">—</option>
+              {ghs.map((g) => (
+                <option key={g} value={g}>
+                  GH{g}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="f-imb">{t.common.building}</Label>
+            <Select id="f-imb" value={immeuble} onChange={(e) => setImmeuble(e.target.value)}>
+              <option value="">—</option>
+              {buildings.map((b) => (
+                <option key={b} value={b}>
+                  {t.common.building} {b}
+                </option>
+              ))}
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
+
+      <p className="text-xs text-slate-500">
+        {filtered.length} / {users.length}
+      </p>
+
+      {/* Résultats */}
+      <Card className="divide-y divide-slate-100">
+        {filtered.length === 0 && (
+          <p className="p-6 text-center text-sm text-slate-400">{t.dashboard.nothingToShow}</p>
+        )}
+        {filtered.map((u) => {
+          const manageable = canManageIds.includes(u.id);
+          return (
+            <div key={u.id} className="flex flex-wrap items-center gap-3 px-4 py-3">
+              <Avatar initials={initials(u.prenom, u.nom)} className="h-8 w-8 text-[10px]" />
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold text-slate-800">
+                  {u.prenom} {u.nom}
+                  {u.mustChangePassword && <span className="ms-1">🔑</span>}
+                </p>
+                <p className="text-xs text-slate-500">
+                  {u.email} · GH{u.gh}
+                  {u.immeuble ? ` · ${u.immeuble}` : ""}
+                  {u.appartement ? ` · ${u.appartement}` : ""}
+                </p>
+              </div>
+              <Badge tone={roleTone(u.role)}>{roleLabel(t, u.role)}</Badge>
+              <Badge tone={statusTone(u.status)}>{statusLabel(t, u.status)}</Badge>
+              <div className="flex flex-col items-end gap-1.5">
+                <div className="flex items-center gap-1.5">
+                  <UserStatusButtons userId={u.id} status={u.status} canManage={manageable} />
+                  <RoleManager
+                    userId={u.id}
+                    currentRole={u.role}
+                    gh={u.gh}
+                    currentImmeuble={u.immeuble}
+                    actorRole={actorRole}
+                    canManage={manageable}
+                  />
+                </div>
+                {manageable && <UserRowActions userId={u.id} canManage={manageable} />}
+              </div>
+            </div>
+          );
+        })}
+      </Card>
+    </div>
+  );
+}
 
 export function AdminCreateUserForm({
   actorRole,
