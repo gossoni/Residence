@@ -338,7 +338,7 @@ export const fr = {
     nameAr: "Nom de la résidence (arabe)",
     logo: "Logo",
     logoHint:
-      "PNG, JPG, WEBP ou SVG — carré recommandé (max 2 Mo). Laissez vide pour conserver l’icône par défaut 🏘️.",
+      "PNG, JPG, WEBP ou SVG — carré recommandé (max 1 Mo). Laissez vide pour conserver l’icône par défaut 🏘️.",
     uploadLogo: "Choisir un fichier…",
     removeLogo: "Supprimer le logo",
     saved: "Identité enregistrée ✅",
@@ -818,7 +818,7 @@ export const ar: Dictionary = {
     nameAr: "اسم الإقامة (بالعربية)",
     logo: "الشعار",
     logoHint:
-      "PNG أو JPG أو WEBP أو SVG — يُفضل مربعاً (بحد أقصى 2 ميغابايت). اتركه فارغاً للاحتفاظ بالأيقونة الافتراضية 🏘️.",
+      "PNG أو JPG أو WEBP أو SVG — يُفضل مربعاً (بحد أقصى 1 ميغابايت). اتركه فارغاً للاحتفاظ بالأيقونة الافتراضية 🏘️.",
     uploadLogo: "اختيار ملف…",
     removeLogo: "حذف الشعار",
     saved: "تم حفظ الهوية ✅",
