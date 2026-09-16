@@ -269,7 +269,7 @@ export async function computeMajority(
   return { totalVoix: 0, majorite: 0 };
 }
 
-export function canPublish(user: User): boolean {
+export function canPublish(user: Pick<User, "status" | "role">): boolean {
   return (
     user.status === "actif" &&
     ["admin", "president", "gh_manager", "building_manager"].includes(user.role)
