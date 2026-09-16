@@ -45,6 +45,7 @@ import {
 } from "@/components/ui";
 import { PublicationCard } from "@/components/publication-card";
 import {
+  AccountsFilters,
   AdminArchivesList,
   AdminBatchCreateForm,
   AdminCommentActions,
@@ -416,8 +417,11 @@ export default async function DashboardPage() {
             <p className="mt-1 text-sm text-slate-600">{t.ownPassword.subtitle}</p>
           </CardHeader>
           <CardContent>
-            // <OwnPasswordForm />
-            <OwnPasswordForm telephone={user.telephone} nom={user.nom} prenom={user.prenom} />
+            <OwnPasswordForm 
+		nom={user.nom} 
+		prenom={user.prenom}
+		telephone={user.telephone} 
+		 />
           </CardContent>
         </Card>
       </section>
@@ -884,111 +888,22 @@ export default async function DashboardPage() {
             />
           </div>
           <Card className="overflow-x-auto">
-            
-<AccountsFilters
-  users={allUsers.map((u) => ({
-    id: u.id,
-    email: u.email,
-    nom: u.nom,
-    prenom: u.prenom,
-    role: u.role,
-    gh: u.gh,
-    immeuble: u.immeuble,
-    appartement: u.appartement,
-    status: u.status,
-    mustChangePassword: u.mustChangePassword,
-  }))}
-  actorRole={user.role}
-  canManageIds={allUsers.filter((u) => canManageUser(user, u)).map((u) => u.id)}
-/>
-
-	/* <table className="w-full min-w-[900px] text-left text-sm">
-              <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
-                <tr>
-                  <th className="px-4 py-3">{t.common.email}</th>
-                  <th className="px-4 py-3">{t.common.role}</th>
-                  <th className="px-4 py-3">{t.common.location}</th>
-                  <th className="px-4 py-3">{t.common.status}</th>
-                  <th className="px-4 py-3">{t.common.account}</th>
-                  <th className="px-4 py-3 text-end">{t.dashboard.roleAssigned}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {allUsers.map((u) => (
-                  <tr
-                    key={u.id}
-                    className="border-b border-slate-100 last:border-0 hover:bg-slate-50/60"
-                  >
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2.5">
-                        <Avatar
-                          initials={initials(u.prenom, u.nom)}
-                          className="h-8 w-8 text-[10px]"
-                        />
-                        <div>
-                          <p className="font-semibold text-slate-800">
-                            {u.prenom} {u.nom}
-                          </p>
-                          <p className="text-xs text-slate-400">{u.email}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3">
-                      <Badge tone={roleTone(u.role)}>{roleLabel(t, u.role)}</Badge>
-                    </td>
-                    <td className="px-4 py-3 text-xs text-slate-600">
-                      {ghLabel(u.gh)}
-                      {u.immeuble ? ` · ${t.common.building} ${u.immeuble}` : ""}
-                      {u.appartement ? ` · ${t.common.apartment} ${u.appartement}` : ""}
-                    </td>
-                    <td className="px-4 py-3">
-                      <StatusPill status={u.status} />
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex flex-col items-start gap-1.5">
-                        {u.role === "admin" ? (
-                          <span className="text-xs text-slate-400">—</span>
-                        ) : (
-                          <UserStatusButtons
-                            userId={u.id}
-                            status={u.status}
-                            mustChangePassword={u.mustChangePassword}
-                            canManage={canManageUser(user, u)}
-                          />
-                        )}
-                        {u.mustChangePassword && (
-                          <span className="whitespace-nowrap rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-700 ring-1 ring-inset ring-amber-200">
-                            🔑 {t.forcePassword.pendingBadge}
-                          </span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 text-end">
-                      <div className="flex flex-col items-end gap-1.5">
-                        <RoleManager
-                          userId={u.id}
-                          currentRole={u.role}
-                          gh={u.gh}
-                          currentImmeuble={u.immeuble}
-                          actorRole={user.role}
-                          canManage={canManageUser(user, u)}
-                        />
-                        {u.mustChangePassword && !isImmune(u) && canManageUser(user, u) && (
-                          <AdminUnlockPasswordButton userId={u.id} />
-                        )}
-                        {canManageUser(user, u) && (
-                          <AdminUserRowActions
-                            userId={u.id}
-                            canManage={canManageUser(user, u)}
-                          />
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table> */
-
+            <AccountsFilters
+		users={allUsers.map((u) => ({
+    		id: u.id,
+    		email: u.email,
+    		nom: u.nom,
+    		prenom: u.prenom,
+    		role: u.role,
+    		gh: u.gh,
+    		immeuble: u.immeuble,
+    		appartement: u.appartement,
+    		status: u.status,
+    		mustChangePassword: u.mustChangePassword,
+  			}))}
+  		actorRole={user.role}
+  		canManageIds={allUsers.filter((u) => canManageUser(user, u)).map((u) => u.id)}
+	     />
           </Card>
         </section>
       )}
