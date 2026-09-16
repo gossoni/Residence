@@ -17,6 +17,7 @@ import {
   updateBrandingAction,
   updatePubTypesAction,
   updateVoteWeightsAction,
+  updateProfileAction,
   type AdminActionState,
 } from "@/app/actions";
 import { buildingsOf, ghLabel } from "@/lib/structure";
@@ -1146,64 +1147,171 @@ export function PubTypesForm({
 /* Mot de passe de l'Administrateur (changement immédiat)              */
 /* ------------------------------------------------------------------ */
 
-export function OwnPasswordForm() {
+// export function OwnPasswordForm() {
+//   const t = useT();
+//   const [state, dispatch, pending] = useActionState(adminChangeOwnPasswordAction, {} as {
+//     ok?: boolean;
+//     error?: string;
+//   });
+//   const [next, setNext] = useState("");
+//   const [confirm, setConfirm] = useState("");
+//   const mismatch = confirm.length > 0 && next !== confirm;
+
+//   return (
+//     <form action={dispatch} className="space-y-4">
+//       <div>
+//         <Label htmlFor="op-current">{t.ownPassword.current}</Label>
+//         <Input
+//           id="op-current"
+//           name="current"
+//           type="password"
+//           required
+//           autoComplete="current-password"
+//         />
+//       </div>
+//       <div className="grid gap-4 sm:grid-cols-2">
+//         <div>
+//           <Label htmlFor="op-new">{t.ownPassword.newPassword}</Label>
+//           <Input
+//             id="op-new"
+//             name="newPassword"
+//             type="password"
+//             required
+//             minLength={8}
+//             value={next}
+//             onChange={(e) => setNext(e.target.value)}
+//             autoComplete="new-password"
+//           />
+//           <p className="mt-1 text-xs text-slate-400">{t.auth.passwordHint}</p>
+//         </div>
+//         <div>
+//           <Label htmlFor="op-confirm">{t.ownPassword.confirm}</Label>
+//           <Input
+//             id="op-confirm"
+//             name="confirm"
+//             type="password"
+//             required
+//             minLength={8}
+//             value={confirm}
+//             onChange={(e) => setConfirm(e.target.value)}
+//             autoComplete="new-password"
+//           />
+//           {mismatch && <FieldError>{t.forcePassword.mismatch}</FieldError>}
+//         </div>
+//       </div>
+//       {state.ok && <Alert tone="emerald">{t.ownPassword.saved}</Alert>}
+//       {state.error && <Alert>{state.error}</Alert>}
+//       <Button type="submit" loading={pending} disabled={mismatch}>
+//         {t.ownPassword.submit}
+//       </Button>
+//       <p className="text-xs text-slate-400">{t.ownPassword.hint}</p>
+//     </form>
+//   );
+// }
+
+
+export function OwnPasswordForm({
+  telephone,
+  nom,
+  prenom,
+}: {
+  telephone: string | null;
+  nom: string;
+  prenom: string;
+}) {
   const t = useT();
-  const [state, dispatch, pending] = useActionState(adminChangeOwnPasswordAction, {} as {
-    ok?: boolean;
-    error?: string;
-  });
+  const router = useRouter();
+  const [profileState, profileDispatch, profilePending] = useActionState(
+    updateProfileAction,
+    {} as { ok?: boolean; error?: string },
+  );
+  const [pwdState, pwdDispatch, pwdPending] = useActionState(
+    changeOwnPasswordAction,
+    {} as { ok?: boolean; error?: string },
+  );
   const [next, setNext] = useState("");
   const [confirm, setConfirm] = useState("");
   const mismatch = confirm.length > 0 && next !== confirm;
 
+  useEffect(() => {
+    if (profileState.ok || pwdState.ok) router.refresh();
+  }, [profileState, pwdState, router]);
+
   return (
-    <form action={dispatch} className="space-y-4">
-      <div>
-        <Label htmlFor="op-current">{t.ownPassword.current}</Label>
-        <Input
-          id="op-current"
-          name="current"
-          type="password"
-          required
-          autoComplete="current-password"
-        />
-      </div>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <Label htmlFor="op-new">{t.ownPassword.newPassword}</Label>
-          <Input
-            id="op-new"
-            name="newPassword"
-            type="password"
-            required
-            minLength={8}
-            value={next}
-            onChange={(e) => setNext(e.target.value)}
-            autoComplete="new-password"
-          />
-          <p className="mt-1 text-xs text-slate-400">{t.auth.passwordHint}</p>
+    <div className="space-y-6">
+      {/* ── Informations personnelles ── */}
+      <form action={profileDispatch} className="space-y-4">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <Label htmlFor="oi-prenom">{t.common.firstName}</Label>
+            <Input id="oi-prenom" name="prenom" defaultValue={prenom} />
+          </div>
+          <div>
+            <Label htmlFor="oi-nom">{t.common.lastName}</Label>
+            <Input id="oi-nom" name="nom" defaultValue={nom} />
+          </div>
         </div>
         <div>
-          <Label htmlFor="op-confirm">{t.ownPassword.confirm}</Label>
+          <Label htmlFor="oi-telephone">{t.common.phone}</Label>
           <Input
-            id="op-confirm"
-            name="confirm"
-            type="password"
+            id="oi-telephone"
+            name="telephone"
+            type="tel"
+            defaultValue={telephone ?? ""}
             required
-            minLength={8}
-            value={confirm}
-            onChange={(e) => setConfirm(e.target.value)}
-            autoComplete="new-password"
           />
-          {mismatch && <FieldError>{t.forcePassword.mismatch}</FieldError>}
         </div>
-      </div>
-      {state.ok && <Alert tone="emerald">{t.ownPassword.saved}</Alert>}
-      {state.error && <Alert>{state.error}</Alert>}
-      <Button type="submit" loading={pending} disabled={mismatch}>
-        {t.ownPassword.submit}
-      </Button>
-      <p className="text-xs text-slate-400">{t.ownPassword.hint}</p>
-    </form>
+        {profileState.ok && <Alert tone="emerald">{t.profile.updated}</Alert>}
+        {profileState.error && <Alert>{profileState.error}</Alert>}
+        <Button type="submit" loading={profilePending}>
+          {t.common.save}
+        </Button>
+      </form>
+
+      {/* ── Mot de passe ── */}
+      <form action={pwdDispatch} className="space-y-4 border-t border-slate-200 pt-5">
+        <p className="text-sm font-semibold text-slate-700">{t.profile.changePassword}</p>
+        <p className="text-xs text-slate-400">{t.profile.passwordOptional}</p>
+        <div>
+          <Label htmlFor="oi-current">{t.ownPassword.current}</Label>
+          <Input id="oi-current" name="current" type="password" required autoComplete="current-password" />
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <Label htmlFor="oi-new">{t.ownPassword.newPassword}</Label>
+            <Input
+              id="oi-new"
+              name="newPassword"
+              type="password"
+              required
+              minLength={8}
+              value={next}
+              onChange={(e) => setNext(e.target.value)}
+              autoComplete="new-password"
+            />
+          </div>
+          <div>
+            <Label htmlFor="oi-confirm">{t.ownPassword.confirm}</Label>
+            <Input
+              id="oi-confirm"
+              name="confirm"
+              type="password"
+              required
+              minLength={8}
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+              autoComplete="new-password"
+            />
+            {mismatch && <FieldError>{t.forcePassword.mismatch}</FieldError>}
+          </div>
+        </div>
+        {pwdState.ok && <Alert tone="emerald">{t.ownPassword.saved}</Alert>}
+        {pwdState.error && <Alert>{pwdState.error}</Alert>}
+        <Button type="submit" loading={pwdPending} disabled={mismatch}>
+          {t.ownPassword.submit}
+        </Button>
+        <p className="text-xs text-slate-400">{t.ownPassword.hint}</p>
+      </form>
+    </div>
   );
 }
