@@ -416,7 +416,8 @@ export default async function DashboardPage() {
             <p className="mt-1 text-sm text-slate-600">{t.ownPassword.subtitle}</p>
           </CardHeader>
           <CardContent>
-            <OwnPasswordForm />
+            // <OwnPasswordForm />
+            <OwnPasswordForm telephone={user.telephone} nom={user.nom} prenom={user.prenom} />
           </CardContent>
         </Card>
       </section>
@@ -883,7 +884,25 @@ export default async function DashboardPage() {
             />
           </div>
           <Card className="overflow-x-auto">
-            <table className="w-full min-w-[900px] text-left text-sm">
+            
+<AccountsFilters
+  users={allUsers.map((u) => ({
+    id: u.id,
+    email: u.email,
+    nom: u.nom,
+    prenom: u.prenom,
+    role: u.role,
+    gh: u.gh,
+    immeuble: u.immeuble,
+    appartement: u.appartement,
+    status: u.status,
+    mustChangePassword: u.mustChangePassword,
+  }))}
+  actorRole={user.role}
+  canManageIds={allUsers.filter((u) => canManageUser(user, u)).map((u) => u.id)}
+/>
+
+	/* <table className="w-full min-w-[900px] text-left text-sm">
               <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                 <tr>
                   <th className="px-4 py-3">{t.common.email}</th>
@@ -968,7 +987,8 @@ export default async function DashboardPage() {
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </table> */
+
           </Card>
         </section>
       )}
