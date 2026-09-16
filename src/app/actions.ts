@@ -202,18 +202,23 @@ export async function createPublicationAction(
   formData: FormData,
 ): Promise<PublicationResult> {
   const user = await requireActiveUser();
-  if (!canPublish(user))
-  try {
-    await assertNotLocked(user, "Application verrouillée par l’Administrateur.");
-  } catch (e) {
-    return { error: e instanceof Error ? e.message : "Action refusée." };
-  }
+//  if (!canPublish(user))
+//  try {
+//    await assertNotLocked(user, "Application verrouillée par l’Administrateur.");
+//  } catch (e) {
+//    return { error: e instanceof Error ? e.message : "Action refusée." };
+//  }
 
+//    return {
+//      error:
+//        "Seuls l’Administrateur, le Président, les Responsables de Groupe et les Responsables d’Immeuble peuvent publier.",
+//    };
+
+if (!canPublish(user))
     return {
-      error:
-        "Seuls l’Administrateur, le Président, les Responsables de Groupe et les Responsables d’Immeuble peuvent publier.",
+      error: `DÉBOGAGE — email: ${user.email} | rôle: ${user.role} | statut: ${user.status}`,
     };
-
+  
   const type = String(formData.get("type") ?? "texte");
   const titre = String(formData.get("titre") ?? "").trim();
   const contenu = String(formData.get("contenu") ?? "").trim();
