@@ -19,6 +19,7 @@ import {
   updateVoteWeightsAction,
   updateProfileAction,
   type AdminActionState,
+  changeOwnPasswordAction,
 } from "@/app/actions";
 import { buildingsOf, ghLabel } from "@/lib/structure";
 import { creatableRoles } from "@/lib/hierarchy";
