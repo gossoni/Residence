@@ -241,8 +241,7 @@ export async function createPublicationAction(
     return { error: "Portée de publication inconnue." };
   if (type === "fichier") {
     if (!fileUrl) return { error: "Veuillez joindre un fichier (PDF ou image)." };
-    if (!fileUrl.startsWith("/api/uploads/") && !fileUrl.startsWith("/uploads/"))
-      return { error: "Fichier invalide." };
+    if (!isUploadUrl(fileUrl)) return { error: "Fichier invalide." };
   }
 
   // Sondage : au moins deux options distinctes.
@@ -1312,7 +1311,10 @@ export async function updateBrandingAction(
     return { error: "Le nom ne peut pas dépasser 120 caractères." };
 
   const isUploadUrl = (u: string) =>
-    u.startsWith("/api/uploads/") || u.startsWith("/uploads/");
+    u.startsWith("/api/uploads/") || 
+    u.startsWith("/uploads/") ||
+    u.startsWith("https://") ||
+    u.startsWith("http://");
   if (logoUrl && !isUploadUrl(logoUrl))
     return { error: "Logo invalide (fichier non reconnu)." };
 
