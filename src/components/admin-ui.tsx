@@ -1,8 +1,4 @@
 "use client";
-import { initials } from "@/lib/format";
-import { roleTone } from "@/lib/structure";
-import { roleLabel, userStatusLabel } from "@/lib/i18n";
-import { UserStatusButtons, RoleManager } from "./client-forms";
 
 import { useActionState, useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -17,19 +13,23 @@ import {
   adminResetPasswordAction,
   adminToggleLockAction,
   adminUnlockPasswordAction,
+  adminChangeOwnPasswordAction,
   updateBrandingAction,
   updatePubTypesAction,
   updateVoteWeightsAction,
   updateProfileAction,
   type AdminActionState,
-  changeOwnPasswordAction,
 } from "@/app/actions";
-import { buildingsOf, ghLabel } from "@/lib/structure";
+import { buildingsOf, ghLabel, roleTone } from "@/lib/structure";
 import { creatableRoles } from "@/lib/hierarchy";
+import { initials } from "@/lib/format";
+import { roleLabel, userStatusLabel } from "@/lib/i18n";
+import { UserStatusButtons, RoleManager } from "./client-forms";
 import { useT } from "./locale-provider";
 import { cn } from "@/lib/cn";
 import {
   Alert,
+  Avatar,
   Badge,
   Button,
   Card,
@@ -180,7 +180,11 @@ export function AccountsFilters({
                 </p>
               </div>
               <Badge tone={roleTone(u.role)}>{roleLabel(t, u.role)}</Badge>
-              <Badge tone={statusTone(u.status)}>{userStatusLabel(t, u.status)}</Badge>
+              <Badge
+  tone={u.status === "actif" ? "emerald" : u.status === "bloque" ? "rose" : "amber"}
+>
+                                         {userStatusLabel(t, u.status)}
+              </Badge>
               <div className="flex flex-col items-end gap-1.5">
                 <div className="flex items-center gap-1.5">
                   <UserStatusButtons userId={u.id} status={u.status} canManage={manageable} />
@@ -193,7 +197,7 @@ export function AccountsFilters({
                     canManage={manageable}
                   />
                 </div>
-                {manageable && <UserRowActions userId={u.id} canManage={manageable} />}
+                {manageable && <AdminUserRowActions userId={u.id} canManage={manageable} />}
               </div>
             </div>
           );
