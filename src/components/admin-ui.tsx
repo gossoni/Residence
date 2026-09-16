@@ -1,7 +1,7 @@
 "use client";
 import { initials } from "@/lib/format";
-import { roleTone, statusTone } from "@/lib/constants";
-import { roleLabel, statusLabel } from "@/lib/i18n";
+import { roleTone, statusTone } from "@/lib/structure";
+import { roleLabel, userSstatusLabel } from "@/lib/i18n";
 import { UserStatusButtons, RoleManager } from "./client-forms";
 
 import { useActionState, useEffect, useState, useTransition } from "react";
@@ -10,7 +10,6 @@ import {
   adminArchivePublicationAction,
   adminArchiveUserAction,
   adminBatchCreateUsersAction,
-  adminChangeOwnPasswordAction,
   adminCreateUserAction,
   adminDeleteCommentAction,
   adminDeletePublicationAction,
@@ -181,7 +180,7 @@ export function AccountsFilters({
                 </p>
               </div>
               <Badge tone={roleTone(u.role)}>{roleLabel(t, u.role)}</Badge>
-              <Badge tone={statusTone(u.status)}>{statusLabel(t, u.status)}</Badge>
+              <Badge tone={statusTone(u.status)}>{userStatusLabel(t, u.status)}</Badge>
               <div className="flex flex-col items-end gap-1.5">
                 <div className="flex items-center gap-1.5">
                   <UserStatusButtons userId={u.id} status={u.status} canManage={manageable} />
@@ -1370,7 +1369,7 @@ export function OwnPasswordForm({
     {} as { ok?: boolean; error?: string },
   );
   const [pwdState, pwdDispatch, pwdPending] = useActionState(
-    changeOwnPasswordAction,
+    adminChangeOwnPasswordAction,
     {} as { ok?: boolean; error?: string },
   );
   const [next, setNext] = useState("");
