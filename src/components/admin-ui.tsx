@@ -1,7 +1,7 @@
 "use client";
 import { initials } from "@/lib/format";
-import { roleTone, statusTone } from "@/lib/structure";
-import { roleLabel, userSstatusLabel } from "@/lib/i18n";
+import { roleTone } from "@/lib/structure";
+import { roleLabel, userStatusLabel } from "@/lib/i18n";
 import { UserStatusButtons, RoleManager } from "./client-forms";
 
 import { useActionState, useEffect, useState, useTransition } from "react";
