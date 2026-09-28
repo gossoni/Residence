@@ -27,7 +27,7 @@ async function main() {
   console.log("   ✔ Rôle `admin` disponible et journal d’audit en place.\n");
 
   const email = argEmail ?? "admin@residence.app";
-  const password = argPassword ?? "Residence2025!";
+  const password = argPassword ?? "Residence@2026";
 
   if (password.length < 8) {
     console.error("✘ Le mot de passe doit contenir au moins 8 caractères.");
