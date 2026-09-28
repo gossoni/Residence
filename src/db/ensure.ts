@@ -63,7 +63,7 @@ export type EnsureAdminResult = {
  */
 export async function ensureAdminAccount(
   email = "admin@residence.app",
-  password = "Residence2025!",
+  password = "Residence@2026",
 ): Promise<EnsureAdminResult> {
   await ensureAdminSchema();
 
