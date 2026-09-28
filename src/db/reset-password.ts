@@ -67,7 +67,7 @@ async function main() {
     process.exit(1);
   }
 
-  const password = args[1] ?? "Residence2025!";
+  const password = args[1] ?? "Residence@2026";
   if (password.length < 8) {
     console.error("✘ Le mot de passe doit contenir au moins 8 caractères.");
     await pool.end();
