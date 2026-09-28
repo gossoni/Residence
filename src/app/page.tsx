@@ -109,7 +109,7 @@ export default async function HomePage() {
           <div className="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-6">
             <p className="text-sm font-semibold text-slate-800">💡 حسابات تجريبية</p>
             <p className="mt-2 text-xs leading-relaxed text-slate-600">
-              كلمة المرور المشتركة: <code className="rounded bg-slate-200 px-1.5 py-0.5">"Residence2025!"</code>
+              كلمة المرور المشتركة: <code className="rounded bg-slate-200 px-1.5 py-0.5">Residence@2026</code>
             </p>
             <div className="mt-3 grid gap-2 text-xs text-slate-600 sm:grid-cols-2">
 
