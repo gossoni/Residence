@@ -72,7 +72,7 @@ export const metadata: Metadata = { title: "Tableau de bord" };
 
 export const dynamic = "force-dynamic";
 
-const DEMO_PASSWORD = "Residence2025!";
+const DEMO_PASSWORD = "Residence@2026";
 
 export default async function DashboardPage() {
   const [user, { t }] = await Promise.all([requireUser(), getT()]);
