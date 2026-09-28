@@ -116,13 +116,14 @@ export default async function HomePage() {
               <p>🏢 مسؤول المجموعة 1: <code className="font-semibold">gh1@residence.app</code></p>
               <p>🏠 : GH1-A مسؤول العمارة <code className="font-semibold">gh1-a@residence.app</code></p>
               <p>👤  مالك نشط: <code className="font-semibold">proprietaire@residence.app</code></p>
-            </div>
             <p className="mt-2 text-xs text-slate-500">
               مالك في انتظار التفعيل: <code className="font-semibold">nouveau@residence.app</code>
             </p>
+            </div>
           </div>
         </div>
       </section>
     </main>
   );
 }
+
