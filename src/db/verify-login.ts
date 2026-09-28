@@ -10,7 +10,7 @@ import { verifyPassword } from "../lib/password";
  */
 async function main() {
   const email = (process.argv[2] ?? "admin@residence.app").toLowerCase();
-  const password = process.argv[3] ?? "Residence2025!";
+  const password = process.argv[3] ?? "Residence@2026";
 
   const rows = await db.select().from(users).where(eq(users.email, email)).limit(1);
   const u = rows[0];
