@@ -15,7 +15,7 @@ import { hashPassword } from "../lib/password";
 import { GH_BUILDINGS, GH_NUMBERS } from "../lib/structure";
 import { ensureAdminSchema } from "./ensure";
 
-const PASSWORD = "Residence2025!";
+const PASSWORD = "Residence@2026";
 
 async function main() {
   // IMPORTANT : répare d'abord le schéma (valeur d'enum `admin` + table
