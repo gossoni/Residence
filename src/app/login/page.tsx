@@ -40,7 +40,7 @@ export default async function LoginPage() {
 
         <div className="rounded-xl border border-slate-200 bg-white p-4 text-xs text-slate-600">
           <p className="font-semibold text-slate-700">{t.auth.demoAccounts}</p>
-          <p className="mt-1.5">{t.auth.demoPassword} : <code className="rounded bg-slate-100 px-1">Residence2025!</code></p>
+          <p className="mt-1.5">{t.auth.demoPassword} : <code className="rounded bg-slate-100 px-1">Residence@2026</code></p>
           <ul className="mt-1.5 space-y-1">
             <li>🏢 <code>gh1@residence.app</code> — Responsable GH1</li>
             <li>🏠 <code>gh1-a@residence.app</code> — Resp. Immeuble GH1-A</li>
