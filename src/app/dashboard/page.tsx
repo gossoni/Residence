@@ -250,6 +250,8 @@ export default async function DashboardPage() {
       .where(scopeCond)
       .orderBy(desc(users.createdAt))
       .limit(300);
+    // Comptes que l'utilisateur courant peut réellement gérer (modifier/supprimer).
+    const manageableUsers = allUsers.filter((u) => canManageUser(user, u));
   }
 
   let branding = null;
