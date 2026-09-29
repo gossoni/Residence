@@ -50,6 +50,7 @@ import {
   canManageContent,
   canManageUser,
   creatableRoles,
+  denyMessage,
   isImmune,
   isManagerRole,
   manageUserDenyReason,
@@ -804,15 +805,15 @@ export async function updateUserRoleAction(
   } catch (e) {
     return { error: e instanceof Error ? e.message : "Action refusée." };
   }
-  if (actor.role !== "admin" && actor.role !== "president")
-    return { error: "Seuls l’Administrateur et le Président peuvent modifier les rôles." };
+if (!isManagerRole(actor.role))
+  return { error: "Seuls les responsables peuvent modifier les rôles." };
 
   const userId = Number(formData.get("userId"));
   const role = String(formData.get("role"));
   const immeubleInput = String(formData.get("immeuble") ?? "").trim().toUpperCase();
 
   if (!Number.isInteger(userId)) return { error: "Utilisateur invalide." };
-  if (!["owner", "gh_manager", "building_manager"].includes(role))
+  if (!["owner", "gh_manager", "building_manager", "president"].includes(role))
     return { error: "Rôle invalide." };
 
   const target = (
@@ -824,6 +825,12 @@ export async function updateUserRoleAction(
   if (target.role === "president" && actor.role !== "admin")
     return { error: "Seul l’Administrateur peut modifier le rôle du Président." };
   if (target.id === actor.id) return { error: "Vous ne pouvez pas modifier votre propre rôle." };
+
+  // ⚠️ Hiérarchie : périmètre + rang strictement inférieur + rôle attribuable
+  const deny = manageUserDenyReason(actor, target);
+  if (deny !== "allowed") return { error: denyMessage(deny) };
+  if (!creatableRoles(actor).includes(role))
+    return { error: "Votre niveau de responsabilité ne permet pas d’attribuer ce rôle." };
 
   if (role === "gh_manager") {
     // Un seul Responsable de Groupe par GH : rétrograde l'ancien titulaire.
@@ -1116,8 +1123,20 @@ export async function adminCreateUserAction(
   const telephone = String(formData.get("telephone") ?? "").trim();
   const role = String(formData.get("role") ?? "");
   // const gh = Number(formData.get("gh"));
-  const gh = Number.parseInt(String(formData.get("gh") ?? ""), 10);
-  const immeuble = String(formData.get("immeuble") ?? "").trim().toUpperCase();
+  // Le select GH est désactivé pour les non-Admin/Président : sa valeur n'est
+// pas transmise. On retombe alors sur le GH de l'acteur.
+const ghParsed = Number.parseInt(String(formData.get("gh") ?? ""), 10);
+const gh =
+  Number.isFinite(ghParsed) && ghParsed >= 1 && ghParsed <= 12
+    ? ghParsed
+    : actor.gh;
+if (!Number.isFinite(gh) || gh < 1 || gh > 12)
+  return { error: "Groupe d’Habitation invalide." };
+
+  // const immeuble = String(formData.get("immeuble") ?? "").trim().toUpperCase();
+  const immeubleRaw = String(formData.get("immeuble") ?? "").trim().toUpperCase();
+  const immeuble = immeubleRaw || (actor.role === "building_manager" ? actor.immeuble ?? "" : "");
+
   const appartement = String(formData.get("appartement") ?? "").trim();
   const password = String(formData.get("password") ?? "").trim();
 
@@ -1202,8 +1221,7 @@ export async function adminResetPasswordAction(
   formData: FormData,
 ): Promise<AdminActionState> {
   const actor = await requireActiveUser();
-  if (actor.role !== "admin")
-    return { error: "Réservé à l’Administrateur." };
+  // if (actor.role !== "admin") return { error: "Réservé à l’Administrateur." };
 
   const userId = Number(formData.get("userId"));
   const password = String(formData.get("password") ?? "").trim();
@@ -1464,7 +1482,11 @@ export async function adminDeletePublicationAction(
   formData: FormData,
 ): Promise<ActionState> {
   const actor = await requireActiveUser();
-  if (actor.role !== "admin") return { error: "Réservé à l’Administrateur." };
+  const pub = (await db.select().from(publications).where(eq(publications.id, pubId)).limit(1))[0];
+  if (!pub) return { error: "Publication introuvable." };
+  if (!canManageContent(actor, pub.scope, pub.gh, pub.immeuble))
+    return { error: "Cette publication est hors de votre périmètre." };
+  // if (actor.role !== "admin") return { error: "Réservé à l’Administrateur." };
 
   const pubId = Number(formData.get("pubId"));
   if (!Number.isInteger(pubId)) return { error: "Publication invalide." };
@@ -1487,7 +1509,7 @@ export async function adminArchivePublicationAction(
   formData: FormData,
 ): Promise<ActionState> {
   const actor = await requireActiveUser();
-  if (actor.role !== "admin") return { error: "Réservé à l’Administrateur." };
+  // if (actor.role !== "admin") return { error: "Réservé à l’Administrateur." };
   const pubId = Number(formData.get("pubId"));
   if (!Number.isInteger(pubId)) return { error: "Publication invalide." };
   const built = await buildPublicationArchive(pubId, actor);
@@ -1503,7 +1525,8 @@ export async function adminDeleteCommentAction(
   formData: FormData,
 ): Promise<ActionState> {
   const actor = await requireActiveUser();
-  if (actor.role !== "admin") return { error: "Réservé à l’Administrateur." };
+
+  // if (actor.role !== "admin") return { error: "Réservé à l’Administrateur." };
 
   const commentId = Number(formData.get("commentId"));
   if (!Number.isInteger(commentId)) return { error: "Commentaire invalide." };
