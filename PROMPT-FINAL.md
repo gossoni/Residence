@@ -369,7 +369,7 @@ npx tsx src/db/verify-login.ts [email] [mdp]      # Vérifie compte + mot de pas
 supprime aucune donnée, **réconcilie les nomenclatures historiques**
 (`poll_choices` → `poll_options`, etc.).
 
-**Comptes de démonstration** (mot de passe `Residence2025!`) :
+**Comptes de démonstration** (mot de passe `Residence@2026`) :
 `admin@residence.app`, `president@residence.app`, `gh1@residence.app`,
 `gh1-a@residence.app`, `proprietaire@residence.app`, `nouveau@residence.app`
 (provisoire).
