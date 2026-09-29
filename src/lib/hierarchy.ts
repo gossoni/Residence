@@ -185,3 +185,21 @@ export function canManageContent(
       actor.immeuble === immeuble;
   return false;
 }
+
+/** Message d'erreur explicite associé à un motif de refus. */
+export function denyMessage(reason: DenyReason): string {
+  switch (reason) {
+    case "self":
+      return "Vous ne pouvez pas effectuer cette action sur votre propre compte.";
+    case "immune":
+      return "Impossible de modifier le compte d’un Administrateur.";
+    case "rank":
+      return "Vous ne pouvez pas agir sur un compte de rang supérieur ou égal au vôtre.";
+    case "scope":
+      return "Ce compte est hors de votre périmètre.";
+    case "inactive":
+      return "Votre compte doit être actif pour effectuer cette action.";
+    default:
+      return "Action non autorisée.";
+  }
+}
