@@ -97,7 +97,7 @@ Cela crée automatiquement :
 - Plusieurs propriétaires (actifs, en attente, bloqué)
 - Des publications, votes, commentaires, signalements et notifications d'exemple
 
-**Mot de passe commun pour tous les comptes de démo : `Residence2025!`**
+**Mot de passe commun pour tous les comptes de démo : `Residence@2026`**
 
 | Compte | Rôle |
 |---|---|
@@ -191,7 +191,7 @@ Compatible : **Railway**, **Render**, **Fly.io**, ou un **VPS** (Docker / PM2).
 
 ### Après le déploiement, dans les deux cas
 
-- Connectez-vous avec le compte `president@residence.app` (mot de passe `Residence2025!`) si vous
+- Connectez-vous avec le compte `president@residence.app` (mot de passe `Residence@2026`) si vous
   avez chargé les données de démonstration, **puis changez immédiatement ce mot de passe** depuis
   « Mon profil ».
 - Créez vos vrais comptes (Président, Responsables de Groupe/Immeuble) et désactivez/supprimez les
@@ -375,7 +375,7 @@ mise en production.
 
 ### Flux d’initialisation recommandé (avant mise en production)
 
-1. Se connecter en **Administrateur** (démo : `admin@residence.app` / `Residence2025!`).
+1. Se connecter en **Administrateur** (démo : `admin@residence.app` / `Residence@2026`).
 2. **Changer immédiatement ce mot de passe** (Mon profil).
 3. Créer le **Président**, puis les **Responsables de Groupe**, puis les **Responsables
    d’Immeuble** — en notant les mots de passe générés.
@@ -398,7 +398,7 @@ pas (l’ancien script de démonstration créait 71 comptes, sans Administrateur
 ### Étape 1 — Diagnostiquer en 5 secondes
 
 ```bash
-npx tsx src/db/verify-login.ts admin@residence.app Residence2025!
+npx tsx src/db/verify-login.ts admin@residence.app Residence@2026
 ```
 
 Trois résultats possibles :
@@ -452,7 +452,7 @@ Ou, si vous avez accès à un compte Administrateur fonctionnel :
 
 ```bash
 npx tsx src/db/check.ts        # toutes les lignes doivent afficher ✔
-npx tsx src/db/verify-login.ts admin@residence.app Residence2025!
+npx tsx src/db/verify-login.ts admin@residence.app Residence@2026
 ```
 
 
