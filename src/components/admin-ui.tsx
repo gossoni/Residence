@@ -306,6 +306,7 @@ export function AdminCreateUserForm({
               </option>
             ))}
           </Select>
+          {!isTopLevel && <input type="hidden" name="gh" value={gh} />}
         </div>
         {needsBuilding && (
           <div>
@@ -326,6 +327,7 @@ export function AdminCreateUserForm({
                 </option>
               ))}
             </Select>
+            {actorRole === "building_manager" && ( <input type="hidden" name="immeuble" value={actorImmeuble ?? ""} />
           </div>
         )}
       </div>
@@ -1076,6 +1078,7 @@ export function AdminBatchCreateForm({
               ),
             )}
           </Select>
+          {!isTopLevel && <input type="hidden" name="gh" value={gh} />}
         </div>
         {needsBuilding && (
           <div>
@@ -1096,6 +1099,8 @@ export function AdminBatchCreateForm({
                 </option>
               ))}
             </Select>
+            {actorRole === "building_manager" && ( <input type="hidden" name="immeuble" value={actorImmeuble ?? ""} />
+          )}
           </div>
         )}
       </div>
