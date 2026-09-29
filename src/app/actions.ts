@@ -116,7 +116,8 @@ export async function registerAction(
   const nom = String(formData.get("nom") ?? "").trim();
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const telephone = String(formData.get("telephone") ?? "").trim();
-  const gh = Number(formData.get("gh"));
+  // const gh = Number(formData.get("gh"));
+  const gh = Number.parseInt(String(formData.get("gh") ?? ""), 10);
   const immeuble = String(formData.get("immeuble") ?? "").trim().toUpperCase();
   const appartement = String(formData.get("appartement") ?? "").trim();
   const password = String(formData.get("password") ?? "");
@@ -125,7 +126,8 @@ export async function registerAction(
     return { error: "Tous les champs sont obligatoires." };
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))
     return { error: "Adresse e-mail invalide." };
-  if (!Number.isInteger(gh) || gh < 1 || gh > 12)
+  // if (!Number.isInteger(gh) || gh < 1 || gh > 12)
+  if (!Number.isFinite(gh) || gh < 1 || gh > 12)
     return { error: "Groupe d’Habitation invalide." };
   if (!buildingsOf(gh).includes(immeuble))
     return { error: `L’immeuble ${immeuble} n’existe pas dans le GH${gh}.` };
@@ -1113,7 +1115,8 @@ export async function adminCreateUserAction(
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const telephone = String(formData.get("telephone") ?? "").trim();
   const role = String(formData.get("role") ?? "");
-  const gh = Number(formData.get("gh"));
+  // const gh = Number(formData.get("gh"));
+  const gh = Number.parseInt(String(formData.get("gh") ?? ""), 10);
   const immeuble = String(formData.get("immeuble") ?? "").trim().toUpperCase();
   const appartement = String(formData.get("appartement") ?? "").trim();
   const password = String(formData.get("password") ?? "").trim();
@@ -1122,7 +1125,8 @@ export async function adminCreateUserAction(
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return { error: "Adresse e-mail invalide." };
   if (!ADMIN_ROLE_VALUES.includes(role as (typeof ADMIN_ROLE_VALUES)[number]))
     return { error: "Rôle invalide." };
-  if (!Number.isInteger(gh) || gh < 1 || gh > 12)
+  // if (!Number.isInteger(gh) || gh < 1 || gh > 12)
+  if (!Number.isFinite(gh) || gh < 1 || gh > 12)
     return { error: "Groupe d’Habitation invalide." };
 
   const needsBuilding = role === "building_manager" || role === "owner";
@@ -1550,14 +1554,16 @@ export async function adminBatchCreateUsersAction(
   const actor = await requireActiveUser();
 
   const role = String(formData.get("role") ?? "");
-  const gh = Number(formData.get("gh"));
+  // const gh = Number(formData.get("gh"));
+  const gh = Number.parseInt(String(formData.get("gh") ?? ""), 10);
   const immeuble = String(formData.get("immeuble") ?? "").trim().toUpperCase();
   const raw = String(formData.get("lines") ?? "");
   const explicitPassword = String(formData.get("password") ?? "").trim();
 
   if (!["president", "gh_manager", "building_manager", "owner"].includes(role))
     return { error: "Rôle invalide." };
-  if (!Number.isInteger(gh) || gh < 1 || gh > 12)
+  // if (!Number.isInteger(gh) || gh < 1 || gh > 12)
+  if (!Number.isFinite(gh) || gh < 1 || gh > 12)
     return { error: "Groupe d’Habitation invalide." };
 
   const needsBuilding = role === "building_manager" || role === "owner";
