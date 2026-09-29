@@ -12,7 +12,7 @@ export const LOCALES = ["fr", "ar"] as const;
 export type Locale = (typeof LOCALES)[number];
 
 export const LOCALE_COOKIE = "mr_locale";
-export const DEFAULT_LOCALE: Locale = "fr";
+export const DEFAULT_LOCALE: Locale = "ar";
 
 export function isLocale(value: string | null | undefined): value is Locale {
   return value === "fr" || value === "ar";
