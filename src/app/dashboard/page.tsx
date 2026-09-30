@@ -297,12 +297,13 @@ export default async function DashboardPage() {
     }));
   }
 
-  const resetTargets = allUsers
-    .filter((u) => u.role !== "admin")
-    .map((u) => ({
-      id: u.id,
-      label: `${u.prenom} ${u.nom} — ${roleLabel(t, u.role)} (${u.email})`,
-    }));
+const manageableUsers = allUsers.filter((u) => canManageUser(user, u));
+const resetTargets = manageableUsers
+  .filter((u) => u.role !== "admin")
+  .map((u) => ({
+    id: u.id,
+    label: `${u.prenom} ${u.nom} — ${roleLabel(t, u.role)} (${u.email})`,
+  }));
 
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-8">
@@ -878,9 +879,7 @@ export default async function DashboardPage() {
           </div>
           <div className="mb-3">
             <AdminUserBatchBar
-              users={allUsers
-                .filter((u) => canManageUser(user, u))
-                .map((u) => ({
+              users={manageableUsers.map((u) => ({
                   id: u.id,
                   email: u.email,
                   role: u.role,
