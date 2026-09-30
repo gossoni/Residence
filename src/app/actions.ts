@@ -1578,8 +1578,19 @@ export async function adminBatchCreateUsersAction(
 
   const role = String(formData.get("role") ?? "");
   // const gh = Number(formData.get("gh"));
-  const gh = Number.parseInt(String(formData.get("gh") ?? ""), 10);
-  const immeuble = String(formData.get("immeuble") ?? "").trim().toUpperCase();
+  // Le select GH est désactivé pour les non-Admin/Président : sa valeur n'est
+// pas transmise. On retombe alors sur le GH de l'acteur.
+const ghParsed = Number.parseInt(String(formData.get("gh") ?? ""), 10);
+const gh =
+  Number.isFinite(ghParsed) && ghParsed >= 1 && ghParsed <= 12
+    ? ghParsed
+    : actor.gh;
+if (!Number.isFinite(gh) || gh < 1 || gh > 12)
+  return { error: "Groupe d’Habitation invalide." };
+
+  const immeubleRaw = String(formData.get("immeuble") ?? "").trim().toUpperCase();
+const immeuble = immeubleRaw || (actor.role === "building_manager" ? actor.immeuble ?? "" : "");
+
   const raw = String(formData.get("lines") ?? "");
   const explicitPassword = String(formData.get("password") ?? "").trim();
 
