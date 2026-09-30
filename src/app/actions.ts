@@ -1268,10 +1268,9 @@ export async function adminToggleLockAction(
   formData: FormData,
 ): Promise<ActionState> {
   const actor = await requireActiveUser();
-  if (!isManagerRole(actor.role))
-      return { error: "Vous n’avez pas les droits pour cette action." };
-//  if (actor.role !== "admin")
-//    return { error: "Réservé à l’Administrateur." };
+
+  if (actor.role !== "admin")
+    return { error: "Réservé à l’Administrateur." };
 
   const next = String(formData.get("locked")) === "true";
   await db
@@ -1484,18 +1483,15 @@ export async function adminDeletePublicationAction(
   formData: FormData,
 ): Promise<ActionState> {
   const actor = await requireActiveUser();
-  const pub = (await db.select().from(publications).where(eq(publications.id, pubId)).limit(1))[0];
-  if (!pub) return { error: "Publication introuvable." };
-  if (!canManageContent(actor, pub.scope, pub.gh, pub.immeuble))
-    return { error: "Cette publication est hors de votre périmètre." };
-  // if (actor.role !== "admin") return { error: "Réservé à l’Administrateur." };
   if (!isManagerRole(actor.role))
-      return { error: "Vous n’avez pas les droits pour cette action." };
+    return { error: "Vous n’avez pas les droits pour cette action." };
 
   const pubId = Number(formData.get("pubId"));
   if (!Number.isInteger(pubId)) return { error: "Publication invalide." };
   const pub = (await db.select().from(publications).where(eq(publications.id, pubId)).limit(1))[0];
   if (!pub) return { error: "Publication introuvable." };
+  if (!canManageContent(actor, pub.scope, pub.gh, pub.immeuble))
+    return { error: "Cette publication est hors de votre périmètre." };
 
   const wantsArchive = String(formData.get("archive") ?? "") !== "false";
   if (wantsArchive) await buildPublicationArchive(pubId, actor);
@@ -1539,6 +1535,11 @@ export async function adminDeleteCommentAction(
   const comment = (
     await db.select().from(comments).where(eq(comments.id, commentId)).limit(1)
   )[0];
+
+const pub = (await db.select().from(publications).where(eq(publications.id, comment.publicationId)).limit(1))[0];
+if (!pub || !canManageContent(actor, pub.scope, pub.gh, pub.immeuble))
+  return { error: "Ce commentaire est hors de votre périmètre." };
+
   if (!comment) return { error: "Commentaire introuvable." };
 
   const pubId = comment.publicationId;
