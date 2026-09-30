@@ -328,6 +328,7 @@ export function AdminCreateUserForm({
               ))}
             </Select>
             {actorRole === "building_manager" && ( <input type="hidden" name="immeuble" value={actorImmeuble ?? ""} />
+	    )}
           </div>
         )}
       </div>
